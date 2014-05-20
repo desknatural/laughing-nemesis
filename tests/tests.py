@@ -44,4 +44,10 @@ def getPage_Test2():
 
 def pageParse_Test1():
 	loader = pls.pageLoadHandler()
-	readJobPage(loader, "newyork.craigslist.org/ofc/")
+	jobs = pageParse.readJobPage(loader, "newyork.craigslist.org/ofc/")
+	print "pageParse_Test1() output"
+	print "\n \n \n"
+	for job in jobs:
+		print job
+		print "------------------------------------------------------------------------------\n"
+	return True, "Look at printed output.  If correct, then this test has passed."
