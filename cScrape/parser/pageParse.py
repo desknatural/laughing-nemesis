@@ -5,7 +5,7 @@ import pageLoaderProcess as pls
 MAXDATE = 28  # the maximum amount of days in the past any search will ever go
 
 class craigJob:
-	def __init__(self, PID=-1, title='',location='', date=datetime.date(1989, 6, 8) field ='', URL='', compensation='', body=''):
+	def __init__(self, PID=-1, title='',location='', date=datetime.date(1989, 6, 8), field ='', URL='', compensation='', body=''):
 		self.PID = PID
 		self.title = title
 		self.date = date
