@@ -49,10 +49,10 @@ def readJobPage(pls.loader, baseURL, index=0):
 		newJob = craigJob(date=date, PID=PID, URL=URL, location=location, title=title)
 		jobList.append(newJob)
 	
-		# All that's left to do now is to extract the compensation and body of any given job entry
+		# All that's left to do now is to extract the compensation, date and body of every job entry page
 		entrySource = loader.getPage(URL)
 		
-		dateStart_pattern = '<time datetime="[^"]+">'
+		date_pattern = '<time datetime="([^"]+)">'
 		bodyStart_pattern = '<section id="postingbody">'
 		bodyEnd_pattern = '</section>'
 		
@@ -60,8 +60,9 @@ def readJobPage(pls.loader, baseURL, index=0):
 		body = re.split(bodyEnd_pattern, body)[0]
 		jobList[-1].body = body
 		
-		#Date format example for craigslist is [2014-05-17  7:05pm]
-
+		date_string = re.search(date_pattern, entrySource).groups()[0]
+		#Currently script can only decipher dates for eastern standard time, will be fixed.
+		jobList[-1].date = datetime.strptime(date_string, "%FT%H%:M%:S-0400")
 
 		#The compensation is sort of difficult to do so I'll leave that for the future
 
