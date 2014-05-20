@@ -1,16 +1,16 @@
-import tests.py
+from . import tests
 
 Bools = []
 
-bool, string = getPage_Test1()
+bool, string = tests.getPage_Test1()
 Bools.append(bool)
 print string
 
-bool, string = getPage_Test2()
+bool, string = tests.getPage_Test2()
 Bools.append(bool)
 print string
 
-bool, string = pageParse_Test1()
+bool, string = tests.pageParse_Test1()
 Bools.append(bool)
 print string
 

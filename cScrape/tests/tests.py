@@ -1,16 +1,16 @@
-import ../pageLoaderProcess.py as pls
-import ../pageParse.py
+from ..parser import pageLoaderProcess as pls
+from ..parser import pageParse
 import re
 import datetime
 
 # Tests whether it's cURL ing correctly using common URLs
 def getPage_Test1():
 	loader = pls.pageLoadHandler() 
-	source = pls.getPage("www.google.com")
+	source = loader.getPage("www.google.com")
 	match = re.search("<!DOCTYPE html>", source)
 	if not match:
 		return False, "Test for whether getPage could load page correctly has failed."
-	source = pls.getPage("www.yahoo.com")
+	source = loader.getPage("www.yahoo.com")
 	match = re.search("<!DOCTYPE html>", source)
 	if not match:
 		return False, "Test for whether getPage could load page correctly has failed."
@@ -26,12 +26,12 @@ def getPage_Test2():
 	timeDiffs.append(datetime.timedelta())
 	
 	now = datetime.datetime.now()
-	pls.getPage("www.example.org")
-	pls.getPage("www.example.net")
+	loader.getPage("www.example.org")
+	loader.getPage("www.example.net")
 	timeDiffs.append(now - datetime.datetime.now())
-	pls.getPage("www.example.com")
+	loader.getPage("www.example.com")
 	timeDiffs.append(now - datetime.datetime.now())
-	pls.getPage("www.google.com")
+	loader.getPage("www.google.com")
 	timeDiffs.append(now - datetime.datetime.now())
 	
 	#Not entirely sure if the next five lines are proper pythonic idiom

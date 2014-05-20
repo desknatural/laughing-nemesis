@@ -12,10 +12,10 @@ class pageLoadHandler:
 		self.lastRequestTime = datetime.datetime.now() # Initialize our current time
 
 	def getPage(self, url):
-		requestTimeDifference = lastRequestTime - datetime.datetime.now()
+		requestTimeDifference = self.lastRequestTime - datetime.datetime.now()
 		timeUntilLoad = CL_REQUERY_WAIT_TIME - requestTimeDifference
 		if timeUntilLoad > ZERO_TIME:
-			time.sleep( timeUntilLoad.totalseconds() )
+			time.sleep( timeUntilLoad.total_seconds() )
 		self.lastRequestTime = datetime.datetime.now()
 		source = subprocess.check_output(["curl", url])
 		return source 

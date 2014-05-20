@@ -21,7 +21,7 @@ class craigJob:
 
 
 
-def readJobPage(pls.loader, baseURL, index=0):
+def readJobPage(loader, baseURL, index=0):
 	list_URL = baseURL	
 	if index != 0:
 			list_URL += "index" + index + ".html"
@@ -38,9 +38,11 @@ def readJobPage(pls.loader, baseURL, index=0):
 	jobList = []
 	# split the HTML into job chunks
 	jobhtmls = re.split(entryStart_pattern, source)
+	jobhtmls.pop(0)    #since the first entry in this split will not contain anything useful
 	# extract relevant information
 	for entry in jobhtmls:
 		entry = (re.split(entryEnd_pattern, entry))[0]
+		print entry
 		#We can't neccesarily assume that .groups() exists, because search can return a None object.
 		PID = re.search(PID_pattern, entry).groups()[0] 
 		URL, title = re.search(URLtitle_pattern, entry).groups()
