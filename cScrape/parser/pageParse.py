@@ -3,9 +3,10 @@ import datetime
 import pageLoaderProcess as pls
 
 MAXDATE = 28  # the maximum amount of days in the past any search will ever go
+DEFAULT_DATE = datetime.date(1989, 6, 8)
 
 class craigJob:
-	def __init__(self, PID=-1, title='',location='', date=datetime.date(1989, 6, 8), field ='', URL='', compensation='', body=''):
+	def __init__(self, PID=-1, title='',location='', date=DEFAULT_DATE, field ='', URL='', compensation='', body=''):
 		self.PID = PID
 		self.title = title
 		self.date = date
@@ -19,54 +20,73 @@ class craigJob:
 		string += "\nField:" + field + "\nCompensation:" + compensation + "\nBody:" + body
 		return string
 
+def splitIntoEntries(source):	
+	entryStart_pattern = '<p class="row"'
+	entryEnd_pattern = '</span> *</span> *</span> *</span> *</span> *</p>'
+	jobHTMLs = re.split(entryStart_pattern, source)
+	# The first entry will consist of unneeded header HTML before the first entry
+	jobHTMLs.pop(0)
+	for entry in jobHTMLs:
+		entry = (re.split(entryEnd_pattern, entry))[0]  #slices off from the end to ensure only the entry itself is left
+	return jobHTMLs
 
+def extractPID(source):
+	PID_pattern = 'data-pid="([0-9]{10})"'  
+	results = re.search(PID_pattern, entry)
+	if results:
+		return int((results.groups())[0])
+	else:
+		return -1
+
+def extractLocation(source):
+	location_pattern = '<span class="pnr"> <small> \([^)]+)\)</small>'
+	results = re.search(loc_pattern, entry)
+	if results:
+		return results.groups()[0]
+	else:
+		return ''
+
+def extractURLandTitle(source):
+	URLtitle_pattern = '<a href="([a-z0-9\./])+" class="i">([^<]+)</a>'
+	results = re.search(URLtitle_pattern, entry)
+	if results:
+		return results.groups()[:2]
+
+def extractBody(source):
+	bodyStart_pattern = '<section id="postingbody">'
+	bodyEnd_pattern = '</section>'
+	body = re.split(bodyStart_pattern, source)[1]
+	body = re.split(bodyEnd_pattern, body)[0]
+	return body
+
+def extractDate(source):
+	date_pattern = '<time datetime="([T0-9:\-]+)">'		
+	search = re.search(date_pattern, source)
+	if search:
+		return datetime.strptime(search.groups()[0], '%FT%T%z')
+	else:
+		return DEFAULT_DATE
 
 def readJobPage(loader, baseURL, index=0):
 	list_URL = baseURL	
 	if index != 0:
 			list_URL += "index" + index + ".html"
 	source = loader.getPage(list_URL)
+	jobhtmls = splitIntoEntries(source)
 
-	entryStart_pattern = '<p class="row"'
-	entryEnd_pattern = '</span> *</span> *</span> *</span> *</span> *</p>'
-	PID_pattern = 'data-pid="([0-9]{10})"'
-	# date_pattern = '<span class="date">([a-zA-Z0-9 ]{5-6})</span>'
-	URLtitle_pattern = '<a href="([a-z0-9\./])+" class="i">([^<]+)</a>'
-	loc_pattern = '<span class="pnr"> <small> \([^)]+)\)</small>'
+	for entry in jobhtml:	
+		newJob = craigJob()
 
-	# can't do any more patterns, I'd need to open the individual pages in order to be able to do that!
-	jobList = []
-	# split the HTML into job chunks
-	jobhtmls = re.split(entryStart_pattern, source)
-	jobhtmls.pop(0)    #since the first entry in this split will not contain anything useful
-	# extract relevant information
-	for entry in jobhtmls:
-		entry = (re.split(entryEnd_pattern, entry))[0]
-		print entry
-		#We can't neccesarily assume that .groups() exists, because search can return a None object.
-		PID = re.search(PID_pattern, entry).groups()[0] 
-		URL, title = re.search(URLtitle_pattern, entry).groups()
-		location = re.search(loc_pattern, entry).groups()[0]
-
-		newJob = craigJob(date=date, PID=PID, URL=URL, location=location, title=title)
+		craigJob.PID = extractPID(entry)
+		craigJob.location = extractLocation(entry)
+		craigJob.URL , craigJob.title = extractURLandTitle(entry)
 		jobList.append(newJob)
 	
 		# All that's left to do now is to extract the compensation, date and body of every job entry page
 		entrySource = loader.getPage(URL)
-		
-		date_pattern = '<time datetime="([^"]+)">'
-		bodyStart_pattern = '<section id="postingbody">'
-		bodyEnd_pattern = '</section>'
-		
-		body = re.split(bodyStart_pattern, entrySource)[1]
-		body = re.split(bodyEnd_pattern, body)[0]
-		jobList[-1].body = body
-		
-		date_string = re.search(date_pattern, entrySource).groups()[0]
-		#Currently script can only decipher dates for eastern standard time, will be fixed.
-		jobList[-1].date = datetime.strptime(date_string, "%FT%H%:M%:S-0400")
-
-		#The compensation is sort of difficult to do so I'll leave that for the future
+		jobList[-1].body = extractBody(entrySource)
+		jobList[-1].extractDate(entrySource)
+		#The compensation is somewhat difficult so it'll be left for the future
 
 	if len(jobList) == 0:
 		return None
