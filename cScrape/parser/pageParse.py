@@ -42,6 +42,7 @@ def extractPID(source):
 		return -1
 
 def extractLocation(source):
+	""" Extracts the location information from the listings HTML chunk corresponding to one advertisement """
 	location_pattern = '<span class="pnr"> <small> \([^)]+)\)</small>'
 	results = re.search(loc_pattern, source)
 	if results:
@@ -50,6 +51,8 @@ def extractLocation(source):
 		return ''
 
 def extractURLandTitle(source):
+	""" Takes the source code for an ad listing returned by splitIntoEntries and itself returns the URL of the individual
+	ad page and also the title of the advertisement itself """
 	URLtitle_pattern = '<a href="([a-z0-9\./])+" class="i">([^<]+)</a>'
 	results = re.search(URLtitle_pattern, source)
 	if results:
