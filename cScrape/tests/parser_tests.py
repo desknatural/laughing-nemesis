@@ -125,6 +125,34 @@ class extractLocation_tests(unittest.TestCase):
 			output = pageParse.extractLocation(entryFile.read())
 			self.assertEqual(correctLocations[i], output, "Evaluated output: {}  Expected output: {}".format(output, correctLocations[i]))
 
+class extractBody_tests(unittest.TestCase):
 
+		def setUp(self):
+			sourceFile = open( os.path.join(res_dir, "firstSource.txt") )
+			self.source = sourceFile.read()
+			sourceFile.close()
+
+			resultFile = open( os.path.join(res_dir, "firstSourceBody.txt") )
+			self.result = resultFile.read()
+			resultFile.close()
+
+		def test_extractBody(self):
+			testResult = pageParse.extractBody(self.source)
+			self.assertEqual(testResult, result, "Evaluated output : {}  \n----------------------\n Expected output: {}".format(result,testResult))
+
+class extractDate(unittest.TestCase):
+
+	def setUp(self):
+		sourceFile = open( os.path.join(res_dir, "firstSource.txt") )
+		self.source = sourceFile.read()
+		sourceFile.close()
+
+	def test_extractDate_successfulDate(self):
+		actualDate = datetime.datetime(2014,05,30,17,31,57,datetime.timezone(datetime.timedelta(hours=-4)))
+		extractedDate = pageParse.extractDate(self.source)
+
+		self.assertEqual(actualDate, extractedDate, "Extracted value: {} Expected value: {}".format(extractedDate, actualDate))
+
+	
 if __name__ == "__main__":
 	unittest.main()

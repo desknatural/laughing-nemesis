@@ -59,6 +59,7 @@ def extractURLandTitle(source):
 		return results.groups()[:2]
 
 def extractBody(source):
+	""" Given the HTML source for an individual advertisement page, extracts its body """
 	bodyStart_pattern = '<section id="postingbody">'
 	bodyEnd_pattern = '</section>'
 	body = re.split(bodyStart_pattern, source)[1]
@@ -66,6 +67,7 @@ def extractBody(source):
 	return body
 
 def extractDate(source):
+	""" Strips the date and time from an individual advertisement page, turning it into a python datetime object and returning it """
 	date_pattern = '<time datetime="([T0-9:\-]+)">'		
 	search = re.search(date_pattern, source)
 	if search:
