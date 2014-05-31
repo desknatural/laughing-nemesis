@@ -28,8 +28,8 @@ def splitIntoEntries(source):
 	jobHTMLs = re.split(entryStart_pattern, source)
 	# The first entry will consist of unneeded header HTML before the first entry
 	jobHTMLs.pop(0)
-	for entry in jobHTMLs:
-		entry = (re.split(entryEnd_pattern, entry))[0]  #slices off from the end to ensure only the entry itself is left
+	for i, entry in enumerate(jobHTMLs):
+		jobHTMLs[i] = (re.split(entryEnd_pattern, entry))[0]  #slices off from the end to ensure only the entry itself is left
 	return jobHTMLs
 
 def extractPID(source):
