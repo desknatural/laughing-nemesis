@@ -24,7 +24,7 @@ def splitIntoEntries(source):
 	""" Takes the HTML source code input (source) for an entire page of Craigslist listings and splits them up into a list of individual 
 	chunks of HTML corresponding to individual entries to later be processed """
 	entryStart_pattern = '<p class="row" '
-	entryEnd_pattern = '</span> *</span> *</span> *</span> *</span> *</p>'
+	entryEnd_pattern = '(?:</span> *){3}'
 	jobHTMLs = re.split(entryStart_pattern, source)
 	# The first entry will consist of unneeded header HTML before the first entry
 	jobHTMLs.pop(0)
@@ -35,7 +35,7 @@ def splitIntoEntries(source):
 def extractPID(source):
 	""" Takes the HTML source code input (source) for an individual listing in a Craigslist listing page and extracts its PID """
 	PID_pattern = 'data-pid="([0-9]{10})"'  
-	results = re.search(PID_pattern, entry)
+	results = re.search(PID_pattern, source)
 	if results:
 		return int((results.groups())[0])
 	else:
@@ -43,7 +43,7 @@ def extractPID(source):
 
 def extractLocation(source):
 	location_pattern = '<span class="pnr"> <small> \([^)]+)\)</small>'
-	results = re.search(loc_pattern, entry)
+	results = re.search(loc_pattern, source)
 	if results:
 		return results.groups()[0]
 	else:
@@ -51,7 +51,7 @@ def extractLocation(source):
 
 def extractURLandTitle(source):
 	URLtitle_pattern = '<a href="([a-z0-9\./])+" class="i">([^<]+)</a>'
-	results = re.search(URLtitle_pattern, entry)
+	results = re.search(URLtitle_pattern, source)
 	if results:
 		return results.groups()[:2]
 
