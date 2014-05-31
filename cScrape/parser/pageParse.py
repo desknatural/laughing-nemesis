@@ -20,8 +20,10 @@ class craigJob:
 		string += "\nField:" + field + "\nCompensation:" + compensation + "\nBody:" + body
 		return string
 
-def splitIntoEntries(source):	
-	entryStart_pattern = '<p class="row"'
+def splitIntoEntries(source):
+	""" Takes the HTML source code input (source) for an entire page of Craigslist listings and splits them up into a list of individual 
+	chunks of HTML corresponding to individual entries to later be processed """
+	entryStart_pattern = '<p class="row" '
 	entryEnd_pattern = '</span> *</span> *</span> *</span> *</span> *</p>'
 	jobHTMLs = re.split(entryStart_pattern, source)
 	# The first entry will consist of unneeded header HTML before the first entry
@@ -31,6 +33,7 @@ def splitIntoEntries(source):
 	return jobHTMLs
 
 def extractPID(source):
+	""" Takes the HTML source code input (source) for an individual listing in a Craigslist listing page and extracts its PID """
 	PID_pattern = 'data-pid="([0-9]{10})"'  
 	results = re.search(PID_pattern, entry)
 	if results:
