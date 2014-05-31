@@ -88,7 +88,7 @@ class extractURLandTitle_tests(unittest.TestCase):
 		
 		self.URLs = []
 		self.titles = []
-		for i, entryFile in files:
+		for i, entryFile in enumerate(files):
 			URL, title = pageParse.extractURLandTitle(entryFile.read())
 			self.URLs.append(URL)
 			self.titles.append(title)
@@ -117,13 +117,13 @@ class extractLocation_tests(unittest.TestCase):
 	def test_extractLocation_badParse(self):
 		locationHTML = 'blahblahrandomstuff<span></span> morerandom'
 		result = pageParse.extractLocation(locationHTML)
-		self.assertEqual(result, '', "extractLocation not empty string on bad parse.  Output given was: {}".format(result)
+		self.assertEqual(result, '', "extractLocation not empty string on bad parse.  Output given was: {}".format(result) )
 
 	def test_extractLocation_correctEntryParsing(self):
 		correctLocations = [ "Manhattan", "Clinton Hill", "Bronx" ]
 		for i, entryFile in enumerate(self.files):
-		output = pageParse.extractLocation(entryFile.read())
-		self.assertEqual(correctLocations[i], output, "Evaluated output: {}  Expected output: {}".format(output, correctLocations[i]))
+			output = pageParse.extractLocation(entryFile.read())
+			self.assertEqual(correctLocations[i], output, "Evaluated output: {}  Expected output: {}".format(output, correctLocations[i]))
 
 
 if __name__ == "__main__":
