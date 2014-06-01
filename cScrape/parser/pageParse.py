@@ -78,6 +78,7 @@ def extractDate(source):
 		return DEFAULT_DATE
 
 def readJobPage(loader, baseURL, index=0):
+	""" looks at baseURL to find and load a craigslist page, then parses all of the jobs on it into the criagJob format """
 	list_URL = baseURL	
 	if index != 0:
 			list_URL += "index" + index + ".html"
