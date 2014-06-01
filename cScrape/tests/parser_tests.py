@@ -3,6 +3,7 @@ from ..parser import pageParse
 from ..parser import pageLoaderProcess as pls
 import re
 import os.path
+import datetime
 
 res_dir = os.path.join( os.path.dirname(__file__) , "testSampleFiles" )
 
@@ -138,7 +139,7 @@ class extractBody_tests(unittest.TestCase):
 
 		def test_extractBody(self):
 			testResult = pageParse.extractBody(self.source)
-			self.assertEqual(testResult, result, "Evaluated output : {}  \n----------------------\n Expected output: {}".format(result,testResult))
+			self.assertEqual(testResult, self.result, "Evaluated output : {}  \n----------------------\n Expected output: {}".format(self.result,testResult))
 
 class extractDate(unittest.TestCase):
 
@@ -148,7 +149,7 @@ class extractDate(unittest.TestCase):
 		sourceFile.close()
 
 	def test_extractDate_successfulDate(self):
-		actualDate = datetime.datetime(2014,05,30,17,31,57,datetime.timezone(datetime.timedelta(hours=-4)))
+		actualDate = datetime.datetime(2014,05,30,17,31,57)
 		extractedDate = pageParse.extractDate(self.source)
 
 		self.assertEqual(actualDate, extractedDate, "Extracted value: {} Expected value: {}".format(extractedDate, actualDate))

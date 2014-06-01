@@ -70,8 +70,10 @@ def extractDate(source):
 	""" Strips the date and time from an individual advertisement page, turning it into a python datetime object and returning it """
 	date_pattern = '<time datetime="([T0-9:\-]+)">'		
 	search = re.search(date_pattern, source)
+	print search.groups()
 	if search:
-		return datetime.strptime(search.groups()[0], '%FT%T%z')
+		print search.groups()
+		return datetime.datetime.strptime(search.groups()[0], '%Y-%m-%dT%H:%M:%S-0400')
 	else:
 		return DEFAULT_DATE
 

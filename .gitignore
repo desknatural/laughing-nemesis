@@ -1,2 +1,2 @@
 # Ignore all compiled python files
-**/*.pyc
+*.pyc
